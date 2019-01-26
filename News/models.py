@@ -54,20 +54,81 @@ class News(models.Model):
     def thumbnail(self):
         if self.thumbnail_image:
             return format_html(
-            '<img src="{}" width="80vw">'.format('http://127.0.0.1:8000/' + str(self.thumbnail_image.url))
+                '<img src="{}" width="80vw">'.format('http://127.0.0.1:8000/' + str(self.thumbnail_image.url))
             )
         return ''
+
     def background(self):
         if self.background_image:
             return format_html(
-            '<img src="{}" width="80vw">'.format('http://127.0.0.1:8000/' + str(self.background_image.url))
+                '<img src="{}" width="80vw">'.format('http://127.0.0.1:8000/' + str(self.background_image.url))
             )
         return ''
+
     def resources_count(self):
         return self.newsresource_set.all().count()
 
     def tags_count(self):
         return self.newstag_set.all().count()
+
+    def json_dict(self):
+        images = list()
+        for image in self.newsimage_set.all():
+            images.append(
+                {
+                    'image': 'http://localhost:8000/' + str(image.image.url),
+                    'caption': str(image.image_title),
+                    'text': str(image.image_description)
+                }
+            )
+
+        tags = list()
+        for tag in self.newstag_set.all():
+            tags.append(
+                {
+                    'type': tag.tag_type,
+                    'id': tag.tagged_id,
+                    'title': tag.tag_title
+                }
+            )
+
+        resources = list()
+        for resource in self.newsresource_set.all():
+            resources.append(
+                {
+                    'title': resource.resource_title,
+                    'link': resource.resource_url
+                }
+            )
+
+        json_dict = {
+            'id': self.id,
+            'backgroundImage': 'http://localhost:8000/' + str(self.background_image.url),
+            'title': self.news_title,
+            'paragraphs': self.news_text.split('\n'),
+
+            'images': images,
+            'resources': resources,
+            'tags': tags,
+
+            'publishDate': self.uploaded_at.isoformat()
+        }
+
+        return json_dict
+
+    def summery_json_dict(self):
+        json_dict = {
+            'id': self.id,
+            'title': self.news_title,
+            'description': self.news_text[:700],
+            'publishDate': self.uploaded_at.isoformat(),
+            'sportType': self.sport_type,
+        }
+
+        if self.thumbnail_image:
+            json_dict['image'] = str('http://localhost:8000/' + str(self.thumbnail_image.url)),
+
+        return json_dict
 
     def __str__(self):
         return self.news_title + ' -> ' + self.news_text_admin_view()
