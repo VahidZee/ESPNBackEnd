@@ -126,8 +126,8 @@ class News(models.Model):
         }
 
         if self.thumbnail_image:
-            json_dict['image'] = str('http://localhost:8000/' + str(self.thumbnail_image.url)),
-
+            json_dict['image'] = (str('http://localhost:8000/'.__add__(str(self.thumbnail_image.url)))),
+            json_dict['image'] = json_dict['image'][0]
         return json_dict
 
     def __str__(self):
