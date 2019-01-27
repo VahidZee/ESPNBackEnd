@@ -6,26 +6,6 @@ from django.contrib.auth.models import User, Group
 from Espn import models as espn_models
 
 
-class UserInline(admin.StackedInline):
-    model = User
-
-
-#
-# @admin.register(espn_models.Profile)
-# class ProfileAdmin(admin.ModelAdmin):
-
-#     list_display = [
-#         'user',
-#         'profile_image',
-#         'last_login',
-#         'access_token',
-#
-#     ]
-#     list_filter = [
-#
-#     ]
-
-
 class UserProfileInline(admin.TabularInline):
     model = espn_models.Profile
     fk_name = 'user'
