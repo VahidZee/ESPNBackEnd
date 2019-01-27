@@ -1,19 +1,20 @@
 from django.db import models
 from django.utils.html import format_html
+from datetime import date,datetime
 
 
 # Create your models here.
 
 def image_path(instance, filename: str):
-    return 'news/' + str(instance.news.id) + '/' + filename.strip().replace(' ', '')
+    return 'news/' + str(date.today()) + '/' + str(datetime.now().time()) + '-img-' + filename.strip().replace(' ', '')
 
 
 def thumbnail_image_path(instance, filename: str):
-    return 'news/' + str(instance.id) + '/tn' + filename[filename.rfind('.'):]
+    return 'news/' + str(date.today()) + '/' + str(datetime.now().time()) + '-tn-' + filename.strip().replace(' ', '')
 
 
 def background_image_path(instance, filename: str):
-    return 'news/' + str(instance.id) + '/bg' + filename[filename.rfind('.'):]
+    return 'news/' + str(date.today()) + '/' + str(datetime.now().time()) + '-bg-' + filename.strip().replace(' ', '')
 
 
 class News(models.Model):

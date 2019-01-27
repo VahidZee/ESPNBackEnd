@@ -35,8 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'News.apps.NewsConfig',
 
+    # 3rd Party
+
+
+    # Locals
+    'News.apps.NewsConfig',
+    'Espn.apps.EspnConfig',
 ]
 
 MIDDLEWARE = [
