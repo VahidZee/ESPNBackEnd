@@ -89,6 +89,3 @@ class NewsImageAdmin(admin.ModelAdmin):
         'image_title',
         'image_description',
     ]
-    list_display_links = [
-        'id'
-    ]

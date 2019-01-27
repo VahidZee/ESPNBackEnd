@@ -1,19 +1,72 @@
 # General Imports
 from django.contrib import admin
-
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User, Group
 # Local Imports
 from Espn import models as espn_models
 
 
-@admin.register(espn_models.Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    fields = [
-        'user',
-        'profile_picture'
-    ]
-    list_display = [
-        'user'
+class UserInline(admin.StackedInline):
+    model = User
+
+
+#
+# @admin.register(espn_models.Profile)
+# class ProfileAdmin(admin.ModelAdmin):
+
+#     list_display = [
+#         'user',
+#         'profile_image',
+#         'last_login',
+#         'access_token',
+#
+#     ]
+#     list_filter = [
+#
+#     ]
+
+
+class UserProfileInline(admin.TabularInline):
+    model = espn_models.Profile
+    fk_name = 'user'
+    can_delete = False
+    max_num = 1
+    verbose_name_plural = 'Profile'
+    fieldsets = [
+        ('Profile Picture', {
+            'fields': (
+                'profile_picture',
+                'profile_image'
+            )
+        }),
+        ('Access Data', {
+            'fields': (
+                'access_token',
+            )
+        }
+
+        )
     ]
     readonly_fields = [
         'access_token',
+        'profile_image'
     ]
+
+
+# Define a new User admin
+class UserAdmin(UserAdmin):
+    inlines = (UserProfileInline,)
+    list_display = [
+        'username',
+        'email',
+        'last_login',
+    ]
+    list_filter = [
+        'last_login',
+    ]
+
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+admin.site.unregister(Group)

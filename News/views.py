@@ -4,6 +4,8 @@ from .models import News
 import json
 
 PAGE_POSTS_COUNT = 4
+
+
 # Create your views here.
 def get_news_by_id(request, news_id):
     news = News.objects.get(id=news_id)
@@ -30,14 +32,13 @@ def get_news_list(request):
     news = News.objects.all()
     response_json_array = []
     if get_type == 'recent':
-        for index in range((page_number - 1) * PAGE_POSTS_COUNT , (page_number) * PAGE_POSTS_COUNT):
+        for index in range((page_number - 1) * PAGE_POSTS_COUNT, (page_number) * PAGE_POSTS_COUNT):
             if index < news.count():
                 response_json_array.append(
                     news[index].summery_json_dict()
                 )
             else:
                 break
-
 
     http_response = HttpResponse(
         json.dumps(

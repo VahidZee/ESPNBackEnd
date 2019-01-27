@@ -1,9 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date, datetime
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.utils.html import format_html
 
 
-# Create your models here.
+@receiver(post_save, sender=User)
+def create_profile_for_new_user(sender, created, instance, **kwargs):
+    if created:
+        profile = Profile(user=instance)
+        profile.save()
+
+
+# Create your models here.6
 
 
 def profile_picture_path(instance, filename):
@@ -24,4 +34,11 @@ class Profile(models.Model):
         max_length=256,
         blank=True
     )
-Å
+
+    def profile_image(self):
+        res = '<img src="{}" width="50vw">'.format('http://127.0.0.1:8000/' + str(self.profile_picture.url))
+        return format_html(res)
+
+
+    def __str__(self):
+        return self.user.username

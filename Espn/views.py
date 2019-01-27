@@ -21,6 +21,7 @@ def login(request) -> JsonResponse:
         'token': token
     })
 
+
 def logon(request):
     try:
         profile = espn_models.Profile.objects.get(user__username__exact=request.POST['username'])
@@ -29,7 +30,9 @@ def logon(request):
     except Exception:
         return espn_methods.user_profile_not_found()
     token = espn_methods.create_new_access_token(profile)
-    return JsonResponse(data={
-        'ok': True,
-        'token': token
-    })
+    return JsonResponse(
+        data={
+            'ok': True,
+            'token': token
+        }
+    )
