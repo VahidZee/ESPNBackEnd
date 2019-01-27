@@ -11,6 +11,17 @@ def profile_picture_path(instance, filename):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to=profile_picture_path,blank=True)
-    access_token = models.CharField(max_length=256, blank=True)
+    user = models.OneToOneField(
+        to=User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    profile_picture = models.ImageField(
+        upload_to=profile_picture_path,
+        blank=True
+    )
+    access_token = models.CharField(
+        max_length=256,
+        blank=True
+    )
+Å
