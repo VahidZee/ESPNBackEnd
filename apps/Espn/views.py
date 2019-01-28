@@ -8,10 +8,13 @@ from django.utils.decorators import method_decorator
 
 from datetime import datetime
 
+import json
+
 # Models Imports
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from apps.Espn import models as espn_models
+
 # Local Imports
 from apps.Espn import methods as espn_methods
 
@@ -20,7 +23,8 @@ from apps.Espn import methods as espn_methods
 @method_decorator(csrf_exempt, name='dispatch')
 def login(request) -> JsonResponse:
     try:
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        data = json.loads(request.body)
+        user = authenticate(request, username=data['username'], password=data['password'])
         profile = espn_models.Profile.objects.get(user=user)
     except Exception:
         return espn_methods.user_profile_not_found()
@@ -38,6 +42,7 @@ def login(request) -> JsonResponse:
 @method_decorator(csrf_exempt, name='dispatch')
 def logout(request) -> JsonResponse:
     try:
+        json.loads(request.body.decode('utf-8'))
         profile = espn_methods.get_profile(request.POST['token'])
         profile.access_token = ''
         profile.save()
