@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('tag_type', models.CharField(choices=[('G', 'Game'), ('T', 'Team'), ('P', 'Player'), ('L', 'League')], max_length=1)),
                 ('tagged_id', models.IntegerField()),
                 ('tag_title', models.CharField(max_length=40)),
-                ('news', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='News.News')),
+                ('news', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='apps.News.News')),
             ],
         ),
         migrations.AlterField(

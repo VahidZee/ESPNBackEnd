@@ -20,8 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # Local Imports
-from News import urls as news_urls
-from Espn import urls as espn_urls
+from apps.News import urls as news_urls
+from apps.Espn import urls as espn_urls
 
 urlpatterns = [
                   path('admin/', admin.site.urls),

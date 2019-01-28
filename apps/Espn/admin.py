@@ -3,10 +3,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 # Local Imports
-from Espn import models as espn_models
+from apps.Espn import models as espn_models
 
 
-class UserProfileInline(admin.TabularInline):
+class UserProfileInline(admin.StackedInline):
     model = espn_models.Profile
     fk_name = 'user'
     can_delete = False

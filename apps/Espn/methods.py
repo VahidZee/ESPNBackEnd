@@ -1,9 +1,9 @@
 from django.http import JsonResponse
-import Espn.models as EspnModels
+from apps.Espn import models as espn_models
 import secrets as python_secrets
 
 
-def create_new_access_token(profile: EspnModels.Profile) -> str:
+def create_new_access_token(profile: espn_models.Profile) -> str:
     profile.token = python_secrets.token_urlsafe(nbytes=256)
     profile.save()
     return profile.token
@@ -37,9 +37,9 @@ def api_method_not_found() -> JsonResponse:
     })
 
 
-def get_user(token) -> EspnModels.Profile:
+def get_profile(token) -> espn_models.Profile:
     try:
-        profile = EspnModels.Profile.objects.get(token__exact=token)
+        profile = espn_models.Profile.objects.get(token__exact=token)
     except Exception:
         raise Exception
     return profile

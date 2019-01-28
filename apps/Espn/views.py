@@ -1,7 +1,7 @@
 # General Imports
 from django.http import JsonResponse
 
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -10,24 +10,23 @@ from datetime import datetime
 
 # Models Imports
 from django.contrib.auth.models import User
-from Espn import models as espn_models
+from django.contrib.auth import authenticate
+from apps.Espn import models as espn_models
 # Local Imports
-from Espn import methods as espn_methods
+from apps.Espn import methods as espn_methods
 
 
 # Create your views here.
 @method_decorator(csrf_exempt, name='dispatch')
 def login(request) -> JsonResponse:
     try:
-        profile = espn_models.Profile.objects.get(user__username__exact=request.POST['username'])
-        if not check_password(password=request.POST['password'], encoded=profile.user.password):
-            return espn_methods.user_password_was_incorrect()
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        profile = espn_models.Profile.objects.get(user=user)
     except Exception:
-        print(request.body)
-        print(request.POST['username'])
         return espn_methods.user_profile_not_found()
     token = espn_methods.create_new_access_token(profile)
     profile.user.last_login = datetime.now()
+    profile.user.save()
     profile.save()
     return JsonResponse(data={
         'ok': True,
@@ -36,12 +35,33 @@ def login(request) -> JsonResponse:
 
 
 @method_decorator(csrf_exempt, name='dispatch')
+def logout(request) -> JsonResponse:
+    try:
+        profile = espn_methods.get_profile(request.POST['token'])
+        profile.access_token = ''
+        profile.save()
+    except Exception:
+        return JsonResponse(
+            data={
+                'ok': False,
+                'description': 'Token was Invalid'
+            }
+        )
+    return JsonResponse(
+        data={
+            'ok': True,
+            'description': 'Logged out successfully'
+        }
+    )
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 def logon(request):
     try:
         if User.objects.all().filter(username__exact=request.POST['username']).count() == 0:
             user = User()
             user.username = request.POST['username']
-            user.password = request.POST['password']
+            user.password = make_password(request.POST['password'])
             user.email = request.POST['email']
             user.first_name = request.POST['first_name']
             user.last_name = request.POST['last_name']
@@ -52,7 +72,7 @@ def logon(request):
             return JsonResponse(
                 data={
                     'ok': False,
-                    'description': 'Username was taken'
+                    'description': 'Username is already taken'
                 }
             )
     except Exception:
