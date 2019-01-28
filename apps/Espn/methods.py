@@ -39,7 +39,7 @@ def api_method_not_found() -> JsonResponse:
 
 def get_profile(token) -> espn_models.Profile:
     try:
-        profile = espn_models.Profile.objects.get(token__exact=token)
+        profile = espn_models.Profile.objects.get(access_token__exact=token)
     except Exception:
         raise Exception
     return profile

@@ -27,6 +27,7 @@ def login(request) -> JsonResponse:
     token = espn_methods.create_new_access_token(profile)
     profile.user.last_login = datetime.now()
     profile.user.save()
+    profile.access_token = token
     profile.save()
     return JsonResponse(data={
         'ok': True,
