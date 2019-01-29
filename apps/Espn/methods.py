@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from apps.Espn import models as espn_models
 import secrets as python_secrets
+import json
 
 
 def create_new_access_token(profile: espn_models.Profile) -> str:
@@ -45,4 +46,13 @@ def get_profile(token) -> espn_models.Profile:
     return profile
 
 
+def find_profile_decorator(func: callable):
+    def wrapper(request):
+        try:
+            data = json.loads(request.body)
+            profile = get_profile(request['token'])
+            return func(request, profile)
+        except Exception:
+            return user_profile_not_found()
 
+    return wrapper
