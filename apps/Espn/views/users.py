@@ -13,11 +13,15 @@ from apps.Espn.methods import find_profile_decorator
 
 @find_profile_decorator
 def get_me(request, profile: Profile) -> JsonResponse:
+    pic = ''
+    if profile.profile_picture:
+        pic = profile.profile_picture.url
     response_dict = {
+
         'username': profile.user.username,
         'first_name': profile.user.first_name,
         'last_name': profile.user.last_name,
-        'profile_picture': profile.profile_picture.url,
+        'profile_picture': pic,
     }
     return JsonResponse(
         data=response_dict
