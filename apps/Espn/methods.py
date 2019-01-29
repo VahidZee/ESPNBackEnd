@@ -1,7 +1,16 @@
+# General Imports
 from django.http import JsonResponse
-from apps.Espn import models as espn_models
+
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 import secrets as python_secrets
+
 import json
+
+# Model Imports
+from apps.Espn import models as espn_models
+
 
 
 def create_new_access_token(profile: espn_models.Profile) -> str:
@@ -46,13 +55,13 @@ def get_profile(token) -> espn_models.Profile:
     return profile
 
 
-def find_profile_decorator(func: callable):
+def find_profile_decorator(funct: callable):
+    @method_decorator(csrf_exempt, name='dispatch')
     def wrapper(request):
         try:
             data = json.loads(request.body)
-            profile = get_profile(request['token'])
-            return func(request, profile)
+            profile = get_profile(data['token'])
+            return funct(request, profile)
         except Exception:
             return user_profile_not_found()
-
     return wrapper

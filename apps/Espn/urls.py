@@ -2,10 +2,11 @@
 from django.urls import path
 
 # Local Imports
-from apps.Espn import views as espn_views
-
+from apps.Espn.views.authentication import login, logon, logout
+from apps.Espn.views.users import get_me
 urlpatterns = [
-    path('login', espn_views.login, name='user-login'),
-    path('logon', espn_views.logon, name='user-logon'),
-    path('logout', espn_views.logout, name='user-logout')
+    path('login', login, name='user-login'),
+    path('logon', logon, name='user-logon'),
+    path('logout', logout, name='user-logout'),
+    path('getMe', get_me, name='user-self-info'),
 ]
