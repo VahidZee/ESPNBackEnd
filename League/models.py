@@ -1,5 +1,10 @@
 from django.db import models
 from ESPNBackEnd.Game.models import Match, Team
+import datetime
+
+UPCOMING = 'upcoming'
+IN_PROCESS = 'in process'
+FINISHED = 'finished'
 
 
 class TeamResult(models.Model):
@@ -7,9 +12,34 @@ class TeamResult(models.Model):
     score = models.IntegerField(default=0)
     games = models.IntegerField(default=0)
 
+    def json_dict(self):
+        teams = list()
+        for team in self.team.all():
+            teams.append(
+                team.json_dict()
+            )
+            break
+
+        json_dict = {
+            'score': self.score,
+            'games': self.games,
+            'team': teams
+        }
+
 
 class RowTournament(models.Model):
     matches = models.ForeignKey(to=Match, on_delete=models.PROTECT)
+
+    def get_list(self, number):
+        matches = list()
+
+        for index, match in enumerate(self.matches.all()):
+            if index == number:
+                break
+            matches.append(
+                match.json_dict()
+            )
+            break
 
 
 class Tournament(models.Model):
@@ -22,8 +52,100 @@ class Tournament(models.Model):
     # fourth row contains final match
     fourth_row = models.OneToOneField(RowTournament, blank=True)
 
+    def json_dict(self):
+        first = self.first_row.get_list(8)
+        second = self.second_row.get_list(4)
+        third = self.third_row.get_list(2)
+        fourth = self.fourth_row.get_list(1)
+        # for index, item in enumerate(self.first_row.all()):
+        #     if index == 8:
+        #         break
+        #     first.append(
+        #         item.json_dict()
+        #     )
+        #
+        # second = list()
+        # for index, item in enumerate(self.second_row.all()):
+        #     if index == 4:
+        #         break
+        #     second.append(
+        #         item.json_dict()
+        #     )
+        #
+        # third = list()
+        # for index, item in enumerate(self.third_row.all()):
+        #     if index == 2:
+        #         break
+        #     third.append(
+        #         item.json_dict()
+        #     )
+        #
+        # fourth = list()
+        # for item in self.fourth_row.all():
+        #     fourth.append(
+        #         item.json_dict()
+        #     )
+        #     break
+        json_dict = {
+            'first': first,
+            'second': second,
+            'third': third,
+            'fourth': fourth
+        }
+        return json_dict
+
 
 class League(models.Model):
+    name = models.CharField(max_length=1000)
     matches = models.ForeignKey(Match, on_delete=models.PROTECT)
     teams = models.ForeignKey(TeamResult, on_delete=models.PROTECT, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    finished = models.BooleanField(default=False)
+
+    def compare_date(self):
+        if self.finished:
+            return FINISHED
+        if datetime.now < self.date:
+            return UPCOMING
+        return IN_PROCESS
+
+    def json_dict(self):
+        matches = list()
+        for match in self.matches.all():
+            matches.append(
+                match.json_dict()
+            )
+
+        team_res = list()
+        for team in self.teams.all():
+            team_res.append(
+                team.json_dict()
+            )
+
+        tournament = list()
+        for tour in self.tournament.all():
+            tournament.append(
+                tour.json_dict()
+            )
+            break
+
+        json_dict = {
+            'name': self.name,
+            'matches': matches,
+            'teams': team_res,
+            'tournament': tournament,
+            'date': self.date,
+            'status': self.compare_date(),
+            'league_id': self.id
+        }
+        return json_dict
+
+    def pre_json(self):
+        pre_json = {
+            'name': self.name,
+            'status': self.compare_date(),
+            'id': self.id,
+            'date': self.date,
+        }
+        return pre_json

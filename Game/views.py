@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from ESPNBackEnd.Game.models import Player, Team
+from ESPNBackEnd.Game.models import Player, Team, Match
 from django.http import HttpResponse
 import json
 
@@ -21,6 +21,10 @@ def send_player_data(_, p_id):
 
 def send_team_data(_, t_id):
     send_regular_data(Team, t_id)
+
+
+def send_game_data(_, g_id):
+    send_regular_data(Match, g_id)
 
 
 def send_regular_data(model_obj, id):

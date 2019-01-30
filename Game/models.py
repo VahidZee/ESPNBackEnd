@@ -138,11 +138,16 @@ class Event(models.Model):
 class MediaImage(models.Model):
     image = models.ImageField()
 
+    def json_dict(self):
+        pass
+
 
 class MediaVideo(models.Model):
     # video field shit...
     pass
 
+    def json_dict(self):
+        pass
 
 class Match(models.Model):
     BASKETBALL = 'BASKET'
@@ -173,4 +178,52 @@ class Match(models.Model):
             return None
 
     def json_dict(self):
-        pass
+        team_f = list()
+        for team in self.team_f.all():
+            team_f.append(
+                team.json_dict()
+            )
+            break
+
+        team_s = list()
+        for team in self.team_s.all():
+            team_s.append(
+                team.json_dict()
+            )
+            break
+
+        events = list()
+        for event in self.events.all():
+            events.append(
+                event.json_dict()
+            )
+
+        time_report = list()
+        for report in self.time_report.all():
+            time_report.append(
+                report.json_dict()
+            )
+
+        images = list()
+        for img in self.image_medias.all():
+            images.append(
+                img.json_dict()
+            )
+
+        videos = list()
+        for video in self.video_medias.all():
+            videos.append(
+                video.json_dict()
+            )
+        json_dict = {
+            'team_f': team_f,
+            'team_s': team_s,
+            'sport': self.sport_type,
+            'score_f': self.score_f,
+            'score_s': self.score_s,
+            'date': self.date,
+            'events': events,
+            'time_report': time_report,
+            'images': images,
+            'videos': videos,
+        }
