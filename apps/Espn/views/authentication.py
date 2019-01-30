@@ -64,16 +64,21 @@ def logout(request) -> JsonResponse:
 @method_decorator(csrf_exempt, name='dispatch')
 def logon(request):
     try:
-        if User.objects.all().filter(username__exact=request.POST['username']).count() == 0:
+        data = json.loads(request.body)
+        print('shithead')
+        if User.objects.all().filter(username__exact=data['username']).count() == 0:
             user = User()
-            user.username = request.POST['username']
-            user.password = make_password(request.POST['password'])
-            user.email = request.POST['email']
-            user.first_name = request.POST['first_name']
-            user.last_name = request.POST['last_name']
+
+            user.username = data['username']
+            print('are')
+            user.password = make_password(data['password'])
+            user.email = data['email']
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
             user.save()
             profile = espn_models.Profile(user=user)
             profile.save()
+            print('shit')
         else:
             return JsonResponse(
                 data={
