@@ -10,10 +10,6 @@ from django.db import models
 #         defaults.update(kwargs)
 #         return super(RangeField, self).formfield(**defaults)
 
-class Team(models.Model):
-    name = models.CharField(max_length=1000, unique=True)
-    players = models.ForeignKey(to=Player, on_delete=models.CASCADE)
-
 
 class Stat(models.Model):
     season = models.IntegerField(unique=True)
@@ -27,10 +23,26 @@ class Stat(models.Model):
     PFPG = models.IntegerField()
     PPG = models.IntegerField()
 
+    def json_dict(self):
+        json_dict = {
+            'season': self.season,
+            'GP': self.GP,
+            'MPG': self.MPG,
+            'FG%': self.FG,
+            'APG': self.APG,
+            'RPG': self.RPG,
+            'BLKPG': self.BLKPG,
+            'STPG': self.STPG,
+            'PFPG': self.PFPG,
+            'PPG': self.PPG
+        }
+
+        return json_dict
+
 
 class Player(models.Model):
     name = models.CharField(max_length=1000, unique=True)
-    team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
+    team_id = models.IntegerField()
     stats = models.ForeignKey(to=Stat, on_delete=models.CASCADE)
     BASKET_PLAYER = 'BASKET'
     FOOTBALL_PLAYER = 'FOOT'
@@ -51,10 +63,50 @@ class Player(models.Model):
     sport_type = models.CharField(choices=types, max_length=10)
     post = models.CharField(choices=posts, max_length=100)
 
+    def json_dict(self):
+        stat_list = list()
+        for stat in self.stats.all():
+            stat_list.append(
+                stat.json_dict()
+            )
+        json_dict = {
+            'sport': self.sport_type,
+            'post': self.posts,
+            'id': self.id,
+            'stats': stat_list,
+            'name': self.name,
+            'team_id': self.team_id
+        }
+        return json_dict
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=1000, unique=True)
+    players = models.ForeignKey(to=Player, on_delete=models.CASCADE)
+
+    def json_dict(self):
+        players = list()
+        for player in self.players:
+            players.append(
+                player.json_dict()
+            )
+        json_dict = {
+            'name': self.name,
+            'players': players
+        }
+        return json_dict
+
 
 class Report(models.Model):
     time = models.TimeField()
     explain = models.TextField()
+
+    def json_dict(self):
+        json_dict = {
+            'time': self.time,
+            'explain': self.explain
+        }
+        return json_dict
 
 
 class Event(models.Model):
@@ -67,6 +119,20 @@ class Event(models.Model):
     related_player = models.ForeignKey(to=Player, on_delete=models.PROTECT, blank=True)
     time = models.TimeField()
     explanation = models.TextField()
+
+    def json_dict(self):
+        players = list()
+        for player in self.related_player.all():
+            players.append(
+                player.json_dict()
+            )
+        json_dict = {
+            'event': self.event_type,
+            'players': players,
+            'time': self.time,
+            'explanation': self.explanation
+        }
+        return json_dict
 
 
 class MediaImage(models.Model):
@@ -105,3 +171,6 @@ class Match(models.Model):
             return self.team_f
         else:
             return None
+
+    def json_dict(self):
+        pass
