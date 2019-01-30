@@ -91,7 +91,9 @@ class Match(models.Model):
     score_s = models.IntegerField(default=0)
     date = models.DateField()
     sport_type = models.CharField(choices=types, max_length=10)
+    # tables and timeline get created by this field
     events = models.ForeignKey(to=Event, on_delete=models.CASCADE)
+    # this field is for the time report
     time_report = models.ForeignKey(to=Report, on_delete=models.CASCADE)
     image_medias = models.ForeignKey(to=MediaImage, on_delete=models.CASCADE)
     video_medias = models.ForeignKey(to=MediaVideo, on_delete=models.CASCADE)
