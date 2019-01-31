@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import json
 
 # Model Imports
-from .models import News
+import apps.News.models as news_models
 from apps.Espn import models as espn_models
 
 # Local Imports
@@ -19,7 +19,7 @@ PAGE_POSTS_COUNT = 4
 # Create your views here.
 def get_news_by_id(request, news_id: int):
     try:
-        news = News.objects.get(id=news_id)
+        news = news_models.News.objects.get(id=news_id)
 
         json_dict = news.json_dict()
 
@@ -51,12 +51,17 @@ def get_news_list(request, profile, logged_in: bool = False):
     except Exception:
         page_number = 1
 
-    news = News.objects.all()
+    news = news_models.News.objects.all()
     response_json_array = []
+    response = {
+        'has_more': False,
+        'list': [],
+    }
+    temp_array = []
 
     # Filtering Recent Option
     if get_type == 'recent':
-        news = news.filter(uploaded_at__gte=datetime.now() - timedelta(days=2))
+        news = news.filter(uploaded_at__gte=datetime.now() - timedelta(days=10))
         for index in range((page_number - 1) * PAGE_POSTS_COUNT, page_number * PAGE_POSTS_COUNT):
             if index < news.count():
                 response_json_array.append(
@@ -64,26 +69,38 @@ def get_news_list(request, profile, logged_in: bool = False):
                 )
             else:
                 break
+
+        # response payload
+        response['list'] = response_json_array
+
+        # response pagination
+        if page_number * PAGE_POSTS_COUNT < news.count():
+            response['has_more'] = True
+
     # Filtering and Finding related News
     if get_type == 'related':
-        print(request.body)
-        news = news.filter()
-        for index in range((page_number - 1) * PAGE_POSTS_COUNT, page_number * PAGE_POSTS_COUNT):
-            if index < news.count():
-                response_json_array.append(
-                    news[index].summery_json_dict()
+        data = json.loads(request.body)
+        for related_tag in data['tags']:
+            tag = news_models.NewsTag.objects.get(
+                tag_title=related_tag['title'],
+                tagged_id=related_tag['id'],
+                tag_type=related_tag['type']
+            )
+            related_news = news.filter(newstag=tag)
+            for temp_news in related_news:
+                temp_array.append(
+                    temp_news.summery_json_dict()
                 )
-            else:
-                break
-    response = {
-        'list': response_json_array,
-        'has_more': False
-    }
+            # response payload
+            response_json_array = temp_array[(page_number - 1) * PAGE_POSTS_COUNT: page_number * PAGE_POSTS_COUNT - 1]
 
-    # Response Pagination
-    if page_number * PAGE_POSTS_COUNT < news.count():
-        response['has_more'] = True
-    print(response)
+            # response pagination
+            response['list'] = response_json_array
+
+            # Response Pagination
+            if len(temp_array) > page_number * PAGE_POSTS_COUNT :
+                response['has_more'] = True
+
     return JsonResponse(
         data=response
     )
