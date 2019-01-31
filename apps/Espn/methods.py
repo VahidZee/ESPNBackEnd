@@ -1,4 +1,5 @@
 # General Imports
+from django.core.mail import send_mail
 from django.http import JsonResponse
 
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +11,6 @@ import json
 
 # Model Imports
 from apps.Espn import models as espn_models
-
 
 
 def create_new_access_token(profile: espn_models.Profile) -> str:
@@ -64,10 +64,28 @@ def find_profile_decorator(funct: callable):
             return funct(request, profile)
         except Exception:
             return user_profile_not_found()
+
     return wrapper
 
 
-def create_forget_password_token(profile: espn_models.Profile) -> str:
-    profile.forget_password_access_token = python_secrets.token_urlsafe(nbytes=256)
-    profile.save()
-    return profile.forget_password_access_token
+def create_forget_password_token(email: str):
+    try:
+        profile = espn_models.Profile.objects.get(user__email=email)
+        profile.forget_password_access_token = python_secrets.token_urlsafe(nbytes=256)
+        profile.save()
+    except Exception:
+        return False, None
+    return profile.forget_password_access_token, profile
+
+
+def send_forget_password_email(profile: espn_models.Profile, token: str):
+    subject = 'Your Forget Password Token'
+    body = token
+    send_mail(
+        subject,
+        body,
+        'noreply@aeonem.xyz',
+        [profile.user.email],
+        fail_silently=False,
+    )
+

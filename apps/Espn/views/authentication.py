@@ -19,7 +19,7 @@ from apps.Espn import models as espn_models
 
 # Local Imports
 from apps.Espn import methods as espn_methods
-from apps.Espn.methods import find_profile_decorator
+from apps.Espn.methods import find_profile_decorator, create_forget_password_token, send_forget_password_email
 
 
 # Create your views here.
@@ -136,14 +136,60 @@ def logon(request):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-def forget_password(request):
+def forgot_password(request):
     try:
         data = json.loads(request.body)
-        
+        token, profile = create_forget_password_token(data['email'])
+        if token:
+            try:
+                send_forget_password_email(profile, token)
+                return JsonResponse(
+                    data={
+                        'ok': True,
+                        'description': 'An Email was sent to you with an access token'
+                    }
+                )
+            except Exception:
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'Server was unable to send you the email'
+                    }
+                )
+        else:
+            return JsonResponse(
+                data={
+                    'ok': False,
+                    'description': 'Your Email was not registered'
+                }
+            )
     except Exception:
         return JsonResponse(
             data={
-                'ok': True,
+                'ok': False,
                 'description': 'Unknown Error Occured'
+            }
+        )
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+def reset_password(request):
+    try:
+        data = json.loads(request.body)
+        profile = espn_models.Profile.objects.get(forget_password_access_token=data['forgot_access_token'])
+        profile.user.password = make_password(data['password'])
+        profile.forget_password_access_token = ''
+        profile.save()
+        return JsonResponse(
+            data={
+                'ok': True,
+                'description': 'Password was reset Successfully'
+            }
+        )
+    except:
+        return JsonResponse(
+            data={
+                'ok': False,
+                'description': 'Access Token was invalid'
             }
         )
