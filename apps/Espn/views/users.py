@@ -22,7 +22,7 @@ def get_me(request, profile: Profile) -> JsonResponse:
         'first_name': profile.user.first_name,
         'last_name': profile.user.last_name,
         'profile_picture': pic,
-        'email':profile.user.email,
+        'email': profile.user.email,
     }
     return JsonResponse(
         data=response_dict

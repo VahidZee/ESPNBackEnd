@@ -70,6 +70,21 @@ def find_profile_decorator(funct: callable):
     return wrapper
 
 
+def find_profile_if_exists_decorator(funct: callable):
+    @method_decorator(csrf_exempt, name='dispatch')
+    def wrapper(request):
+        try:
+            data = json.loads(request.body)
+            profile = get_profile(data['token'])
+            if not profile.active:
+                raise Exception
+            return funct(request, profile=profile, logged_in=True)
+        except Exception:
+            return funct(request, profile=None, logged_in=False)
+
+    return wrapper
+
+
 def create_forget_password_token(email: str):
     try:
         profile = espn_models.Profile.objects.get(user__email=email)

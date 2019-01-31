@@ -14,5 +14,5 @@ urlpatterns = [
     path('getMe', get_me, name='user-self-info'),
     path('forgot_password', forgot_password, name='user-forgot-passoword'),
     path('reset_password', reset_password, name='user-reset-password'),
-    path('activate_account', activate_account , name='user-account-activation')
+    path('activate_account', activate_account, name='user-account-activation')
 ]
