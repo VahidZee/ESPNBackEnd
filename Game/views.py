@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from ESPNBackEnd.Game.models import Player, Team
+from Game.models import Player, Team
 from django.http import HttpResponse
 import json
 

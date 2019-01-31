@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+from apps.Espn.methods import find_profile_decorator
 from datetime import datetime
 
 import json
@@ -39,20 +40,10 @@ def login(request) -> JsonResponse:
     })
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-def logout(request) -> JsonResponse:
-    try:
-        json.loads(request.body.decode('utf-8'))
-        profile = espn_methods.get_profile(request.POST['token'])
-        profile.access_token = ''
-        profile.save()
-    except Exception:
-        return JsonResponse(
-            data={
-                'ok': False,
-                'description': 'Token was Invalid'
-            }
-        )
+@find_profile_decorator
+def logout(request,profile) -> JsonResponse:
+    profile.access_token = ''
+    profile.save()
     return JsonResponse(
         data={
             'ok': True,
@@ -65,12 +56,9 @@ def logout(request) -> JsonResponse:
 def logon(request):
     try:
         data = json.loads(request.body)
-        print('shithead')
         if User.objects.all().filter(username__exact=data['username']).count() == 0:
             user = User()
-
             user.username = data['username']
-            print('are')
             user.password = make_password(data['password'])
             user.email = data['email']
             user.first_name = data['first_name']
@@ -78,7 +66,6 @@ def logon(request):
             user.save()
             profile = espn_models.Profile(user=user)
             profile.save()
-            print('shit')
         else:
             return JsonResponse(
                 data={

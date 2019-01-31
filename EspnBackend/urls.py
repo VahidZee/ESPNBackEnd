@@ -22,8 +22,8 @@ from django.conf.urls.static import static
 # Local Imports
 from apps.News import urls as news_urls
 from apps.Espn import urls as espn_urls
-from ESPNBackEnd.Game import urls as g_url
-from ESPNBackEnd.League import urls as l_url
+from Game import urls as g_url
+from League import urls as l_url
 
 urlpatterns = [
                   path('admin/', admin.site.urls),

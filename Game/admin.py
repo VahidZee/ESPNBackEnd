@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ESPNBackEnd.Game.models import Player, Stat, Match, MediaVideo, MediaImage, Team, Report, Event
+from Game.models import Player, Stat, Match, MediaVideo, MediaImage, Team, Report, Event
 
 admin.site.register(Player)
 admin.site.register(Stat)
