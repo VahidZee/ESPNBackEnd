@@ -19,7 +19,11 @@ from apps.Espn import models as espn_models
 
 # Local Imports
 from apps.Espn import methods as espn_methods
-from apps.Espn.methods import find_profile_decorator, create_forget_password_token, send_forget_password_email
+from apps.Espn.methods import \
+    find_profile_decorator, \
+    create_forget_password_token, \
+    send_forget_password_email, \
+    send_new_account_activation_email
 
 
 # Create your views here.
@@ -33,16 +37,17 @@ def login(request) -> JsonResponse:
         return espn_methods.user_profile_not_found()
 
     if not profile.active:
+        send_new_account_activation_email(profile)
         return JsonResponse(
             data={
                 'ok': False,
-                'description': 'Please activate your account to continue'
+                'description': 'Please activate your account to continue, A new Token was sent to your email',
             }
         )
 
     token = espn_methods.create_new_access_token(profile)
     profile.user.last_login = datetime.now()
-    profile.user.save()
+    profile.forget_password_access_token = ''
     profile.access_token = token
     profile.save()
     return JsonResponse(data={
@@ -135,11 +140,11 @@ def logon(request):
                 'description': 'Logon Data was incorrect'
             }
         )
-    token = espn_methods.create_new_access_token(profile)
+    send_new_account_activation_email(profile)
     return JsonResponse(
         data={
             'ok': True,
-            'description': 'Logged On successfully'
+            'description': 'Logged On successfully, An Email With your account activation token was sent to you.'
         }
     )
 
@@ -202,3 +207,15 @@ def reset_password(request):
                 'description': 'Access Token was invalid'
             }
         )
+
+
+@find_profile_decorator
+def activate_account(request, profile):
+    profile.active = True
+    profile.save()
+    return JsonResponse(
+        data={
+            'ok': True,
+            'description': 'Account was activated successfully'
+        }
+    )

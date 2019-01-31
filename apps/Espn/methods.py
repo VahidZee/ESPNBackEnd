@@ -89,3 +89,14 @@ def send_forget_password_email(profile: espn_models.Profile, token: str):
         fail_silently=False,
     )
 
+
+def send_new_account_activation_email(profile: espn_models.Profile):
+    subject = 'Account Activation Token'
+    body = create_new_access_token(profile)
+    send_mail(
+        subject,
+        body,
+        'noreply@aeonem.xyz',
+        [profile.user.email],
+        fail_silently=False,
+    )
