@@ -64,6 +64,17 @@ def get_news_list(request, profile, logged_in: bool = False):
                 )
             else:
                 break
+    # Filtering and Finding related News
+    if get_type == 'related':
+        print(request.body)
+        news = news.filter()
+        for index in range((page_number - 1) * PAGE_POSTS_COUNT, page_number * PAGE_POSTS_COUNT):
+            if index < news.count():
+                response_json_array.append(
+                    news[index].summery_json_dict()
+                )
+            else:
+                break
     response = {
         'list': response_json_array,
         'has_more': False
