@@ -6,7 +6,8 @@ from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from apps.Espn.methods import find_profile_decorator
+from django.core.validators import validate_email
+
 from datetime import datetime
 
 import json
@@ -18,6 +19,7 @@ from apps.Espn import models as espn_models
 
 # Local Imports
 from apps.Espn import methods as espn_methods
+from apps.Espn.methods import find_profile_decorator
 
 
 # Create your views here.
@@ -41,7 +43,7 @@ def login(request) -> JsonResponse:
 
 
 @find_profile_decorator
-def logout(request,profile) -> JsonResponse:
+def logout(request, profile) -> JsonResponse:
     profile.access_token = ''
     profile.save()
     return JsonResponse(
@@ -58,10 +60,54 @@ def logon(request):
         data = json.loads(request.body)
         if User.objects.all().filter(username__exact=data['username']).count() == 0:
             user = User()
+            if data['username'] == '':
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'Username name shouldn\'t be blank'
+                    }
+                )
             user.username = data['username']
+            if data['password'] == '':
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'password shouldn\'t be blank'
+                    }
+                )
             user.password = make_password(data['password'])
+            if data['email'] == '':
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'email shouldn\'t be blank'
+                    }
+                )
+            try:
+                validate_email(data['email'])
+            except Exception:
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'Please enter a valid Email'
+                    }
+                )
             user.email = data['email']
+            if data['first_name'] == '':
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'First name shouldn\'t be blank'
+                    }
+                )
             user.first_name = data['first_name']
+            if data['last_name'] == '':
+                return JsonResponse(
+                    data={
+                        'ok': False,
+                        'description': 'Last name shouldn\'t be blank'
+                    }
+                )
             user.last_name = data['last_name']
             user.save()
             profile = espn_models.Profile(user=user)
