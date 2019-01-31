@@ -133,3 +133,17 @@ def logon(request):
             'description': 'Logged On successfully'
         }
     )
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+def forget_password(request):
+    try:
+        data = json.loads(request.body)
+        
+    except Exception:
+        return JsonResponse(
+            data={
+                'ok': True,
+                'description': 'Unknown Error Occured'
+            }
+        )

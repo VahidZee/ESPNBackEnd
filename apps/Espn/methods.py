@@ -14,9 +14,9 @@ from apps.Espn import models as espn_models
 
 
 def create_new_access_token(profile: espn_models.Profile) -> str:
-    profile.token = python_secrets.token_urlsafe(nbytes=256)
+    profile.access_token = python_secrets.token_urlsafe(nbytes=256)
     profile.save()
-    return profile.token
+    return profile.access_token
 
 
 def user_password_was_incorrect() -> JsonResponse:
@@ -65,3 +65,9 @@ def find_profile_decorator(funct: callable):
         except Exception:
             return user_profile_not_found()
     return wrapper
+
+
+def create_forget_password_token(profile: espn_models.Profile) -> str:
+    profile.forget_password_access_token = python_secrets.token_urlsafe(nbytes=256)
+    profile.save()
+    return profile.forget_password_access_token

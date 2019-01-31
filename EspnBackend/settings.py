@@ -40,11 +40,13 @@ INSTALLED_APPS = [
 
 
     # Locals
-    'apps.News.apps.NewsConfig',
-    'apps.Espn.apps.EspnConfig',
+    'apps',
+    'apps.Espn',
+    'apps.News',
 
-    'Game.apps.GameConfig',
-    'League.apps.LeagueConfig'
+    #
+    # 'Game.apps.GameConfig',
+    # 'League.apps.LeagueConfig'
 ]
 
 MIDDLEWARE = [
