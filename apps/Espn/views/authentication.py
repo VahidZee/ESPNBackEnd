@@ -31,6 +31,15 @@ def login(request) -> JsonResponse:
         profile = espn_models.Profile.objects.get(user=user)
     except Exception:
         return espn_methods.user_profile_not_found()
+
+    if not profile.active:
+        return JsonResponse(
+            data={
+                'ok': False,
+                'description': 'Please activate your account to continue'
+            }
+        )
+
     token = espn_methods.create_new_access_token(profile)
     profile.user.last_login = datetime.now()
     profile.user.save()

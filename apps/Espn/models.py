@@ -37,6 +37,11 @@ class Profile(models.Model):
         blank=True
     )
 
+    active = models.BooleanField(
+        blank=False,
+        default=False,
+    )
+
     def profile_image(self):
         res = '<img src="{}" width="50vw">'.format('http://127.0.0.1:8000/' + str(self.profile_picture.url))
         return format_html(res)
