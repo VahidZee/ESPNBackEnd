@@ -57,13 +57,13 @@ def get_profile(token) -> espn_models.Profile:
 
 def find_profile_decorator(funct: callable):
     @method_decorator(csrf_exempt, name='dispatch')
-    def wrapper(request):
+    def wrapper(request, *args, **kwargs):
         try:
             data = json.loads(request.body)
             profile = get_profile(data['token'])
             if not profile.active:
                 raise Exception
-            return funct(request, profile)
+            return funct(*args, request=request, profile=profile, **kwargs)
         except Exception:
             return user_profile_not_found()
 
