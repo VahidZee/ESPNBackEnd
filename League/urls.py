@@ -1,9 +1,7 @@
 from django.urls import path
-from django.http import JsonResponse
+from ESPNBackEnd.League import views
 
-
-def index(request):
-    return JsonResponse()
 urlpatterns = [
-    path('',  index)
+    path('player/<int:l_id>', views.send_league_data),
+    path('', views.send_game_data),
 ]
