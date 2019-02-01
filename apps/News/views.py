@@ -51,7 +51,7 @@ def get_news_list(request, profile, logged_in: bool = False):
     except Exception:
         page_number = 1
 
-    news = news_models.News.objects.all()
+    news = news_models.News.objects.all().order_by('-uploaded_at')
     response_json_array = []
     response = {
         'ok': True,
