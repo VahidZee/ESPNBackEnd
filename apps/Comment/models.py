@@ -106,7 +106,7 @@ class Comment(models.Model):
             'publishDate': self.uploaded_at.isoformat(),
             'text': self.text,
             'likesCount': self.likes_count(),
-            'liked': is_liked,
+            'liked': bool(is_liked[0]),
             'replys': replys
         }
 
