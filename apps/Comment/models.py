@@ -84,7 +84,10 @@ class Comment(models.Model):
         auto_now=True,
     )
 
-    def get_comment_json_dict(self, profile=None):
+    def likes_count(self):
+        return CommentLike.objects.filter(comment=self).count()
+
+    def comment_json_dict(self, profile=None):
         is_liked = False,
         if not profile:
             try:
@@ -98,7 +101,12 @@ class Comment(models.Model):
         replys = [comment.get_comment_json_dict() for comment in self.reply_to_set]
         return {
             'id': self.id,
-            'userInfo': self.profile.info()
+            'userInfo': self.profile.info_json(),
+            'publishDate': self.uploaded_at.isoformat(),
+            'text': self.text,
+            'likesCount': self.likes_count(),
+            'liked': is_liked,
+            'replys': replys
         }
 
     def __str__(self):
