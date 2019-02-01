@@ -1,276 +1,152 @@
 from django.db import models
+from ESPNBackEnd.apps.Game.models import Match, Team
+import datetime
+
+UPCOMING = 'upcoming'
+IN_PROCESS = 'in process'
+FINISHED = 'finished'
 
 
-# class RangeField(models.IntegerField):
-#     def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
-#         self.min_value, self.max_value = min_value, max_value
-#         models.IntegerField.__init__(self, verbose_name, name, **kwargs)
-#     def formfield(self, **kwargs):
-#         defaults = {'min_value': self.min_value, 'max_value':self.max_value}
-#         defaults.update(kwargs)
-#         return super(RangeField, self).formfield(**defaults)
-
-
-class Stat(models.Model):
-    season = models.IntegerField(unique=True)
-    GP = models.IntegerField()
-    MPG = models.IntegerField()
-    FG = models.IntegerField()
-    APG = models.IntegerField()
-    RPG = models.IntegerField()
-    BLKPG = models.IntegerField()
-    STPG = models.IntegerField()
-    PFPG = models.IntegerField()
-    PPG = models.IntegerField()
+class TeamResult(models.Model):
+    team = models.ForeignKey(to=Team, on_delete=models.PROTECT)
+    score = models.IntegerField(default=0)
+    games = models.IntegerField(default=0)
 
     def json_dict(self):
-        json_dict = {
-            'season': self.season,
-            'GP': self.GP,
-            'MPG': self.MPG,
-            'FG': self.FG,
-            'APG': self.APG,
-            'RPG': self.RPG,
-            'BLKPG': self.BLKPG,
-            'STPG': self.STPG,
-            'PFPG': self.PFPG,
-            'PPG': self.PPG
-        }
-
-        return json_dict
-
-
-class Player(models.Model):
-    name = models.CharField(max_length=1000, unique=True)
-    team_id = models.IntegerField()
-    stats = models.ForeignKey(to=Stat, on_delete=models.CASCADE)
-    BASKET_PLAYER = 'BASKET'
-    FOOTBALL_PLAYER = 'FOOT'
-    types = (
-        (BASKET_PLAYER, 'basketball'),
-        (FOOTBALL_PLAYER, 'football'),
-    )
-    ATTACK = 'ATTACK'
-    DEFENCE = 'DEFENCE'
-    GOAL_KEEPER = 'GOAL'
-    # TODO learn the basketball and football posts and complete the posts choices
-    posts = (
-        (ATTACK, 'attack'),
-        (DEFENCE, 'defence'),
-        (GOAL_KEEPER, 'goal keeper'),
-
-    )
-    team_name = models.CharField(max_length=1000)
-    sport_type = models.CharField(choices=types, max_length=10)
-    post = models.CharField(choices=posts, max_length=100)
-    born = models.DateField()
-    experience = models.IntegerField()
-
-    def json_dict(self):
-        stat_list = list()
-        for stat in self.stats.all():
-            stat_list.append(
-                stat.json_dict()
-            )
-        json_dict = {
-            'sport': self.sport_type,
-            'post': self.posts,
-            'id': self.id,
-            'stats': stat_list,
-            'name': self.name,
-            'team_id': self.team_id,
-            'team_name': self.team_name,
-            'born': self.born.isoformat(),
-            'exp': self.experience,
-        }
-        return json_dict
-
-    def prev_json(self):
-        json_dict = {
-            'id': self.id,
-            'name': self.name,
-        }
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=1000, unique=True)
-    players = models.ForeignKey(to=Player, on_delete=models.CASCADE)
-
-    def json_dict(self):
-        players = list()
-        for player in self.players:
-            players.append(
-                player.json_dict()
-            )
-        json_dict = {
-            'name': self.name,
-            'players': players
-        }
-        return json_dict
-
-    def prev_json(self):
-        players = list()
-        for player in self.players:
-            players.append(
-                player.prev_json()
-            )
-        json_dict = {
-            'name': self.name,
-            'players': self.players
-        }
-        return json_dict
-
-
-class Report(models.Model):
-    time = models.TimeField()
-    explain = models.TextField()
-
-    def json_dict(self):
-        json_dict = {
-            'time': self.time,
-            'explain': self.explain
-        }
-        return json_dict
-
-
-class Event(models.Model):
-    CORNER = 'CORNER'
-    HAND = 'HAND'
-    # TODO: fill the event_choices with related data
-    types = (
-        (CORNER, 'corner'),
-        (HAND, 'hand'),
-    )
-    event_type = models.CharField(choices=types, max_length=100)
-    related_player = models.ForeignKey(to=Player, on_delete=models.PROTECT, blank=True)
-    time = models.TimeField()
-    explanation = models.TextField()
-
-    def json_dict(self):
-        players = list()
-        for player in self.related_player.all():
-            players.append(
-                player.json_dict()
-            )
-        json_dict = {
-            'event': self.event_type,
-            'players': players,
-            'time': self.time,
-            'explanation': self.explanation
-        }
-        return json_dict
-
-
-class MediaImage(models.Model):
-    image = models.ImageField()
-
-    def json_dict(self):
-        pass
-
-
-class MediaVideo(models.Model):
-    # video field shit...
-    url = models.URLField()
-
-    def json_dict(self):
-        return {
-            'url': self.url
-        }
-
-
-class Match(models.Model):
-    BASKETBALL = 'BASKET'
-    FOOTBALL = 'FOOT'
-    types = (
-        (BASKETBALL, 'basketball'),
-        (FOOTBALL, 'football'),
-    )
-    team_f = models.ForeignKey(to=Team, on_delete=models.CASCADE)
-    team_s = models.ForeignKey(to=Team, on_delete=models.CASCADE)
-    score_f = models.IntegerField(default=0)
-    score_s = models.IntegerField(default=0)
-    date = models.DateField()
-    sport_type = models.CharField(choices=types, max_length=10)
-    # tables and timeline get created by this field
-    events = models.ForeignKey(to=Event, on_delete=models.CASCADE)
-    # this field is for the time report
-    time_report = models.ForeignKey(to=Report, on_delete=models.CASCADE)
-    image_medias = models.ForeignKey(to=MediaImage, on_delete=models.CASCADE)
-    video_medias = models.ForeignKey(to=MediaVideo, on_delete=models.CASCADE)
-
-    def get_winner(self):
-        if self.score_s > self.score_f:
-            return self.team_s
-        elif self.score_s < self.score_f:
-            return self.team_f
-        else:
-            return None
-
-    def json_dict(self):
-        team_f = list()
-        for team in self.team_f.all():
-            team_f.append(
-                team.json_dict()
+        teams = list()
+        for team in self.team.all():
+            teams.append(
+                team.prev_json()
             )
             break
 
-        team_s = list()
-        for team in self.team_s.all():
-            team_s.append(
-                team.json_dict()
+        json_dict = {
+            'score': self.score,
+            'games': self.games,
+            'team': teams
+        }
+        return json_dict
+
+
+class RowTournament(models.Model):
+    matches = models.ForeignKey(to=Match, on_delete=models.PROTECT)
+
+    def get_list(self, number):
+        matches = list()
+
+        for index, match in enumerate(self.matches.all()):
+            if index == number:
+                break
+            matches.append(
+                match.json_dict()
             )
             break
 
-        events = list()
-        for event in self.events.all():
-            events.append(
-                event.json_dict()
-            )
 
-        time_report = list()
-        for report in self.time_report.all():
-            time_report.append(
-                report.json_dict()
-            )
+class Tournament(models.Model):
+    # first row contains 8 matches
+    first_row = models.OneToOneField(RowTournament, blank=True)
+    # second row contains 4 matches
+    second_row = models.OneToOneField(RowTournament, blank=True)
+    # third row contains 2 matches
+    third_row = models.OneToOneField(RowTournament, blank=True)
+    # fourth row contains final match
+    fourth_row = models.OneToOneField(RowTournament, blank=True)
 
-        images = list()
-        for img in self.image_medias.all():
-            images.append(
-                img.json_dict()
-            )
-
-        videos = list()
-        for video in self.video_medias.all():
-            videos.append(
-                video.json_dict()
-            )
+    def json_dict(self):
+        first = self.first_row.get_list(8)
+        second = self.second_row.get_list(4)
+        third = self.third_row.get_list(2)
+        fourth = self.fourth_row.get_list(1)
+        # for index, item in enumerate(self.first_row.all()):
+        #     if index == 8:
+        #         break
+        #     first.append(
+        #         item.json_dict()
+        #     )
+        #
+        # second = list()
+        # for index, item in enumerate(self.second_row.all()):
+        #     if index == 4:
+        #         break
+        #     second.append(
+        #         item.json_dict()
+        #     )
+        #
+        # third = list()
+        # for index, item in enumerate(self.third_row.all()):
+        #     if index == 2:
+        #         break
+        #     third.append(
+        #         item.json_dict()
+        #     )
+        #
+        # fourth = list()
+        # for item in self.fourth_row.all():
+        #     fourth.append(
+        #         item.json_dict()
+        #     )
+        #     break
         json_dict = {
-            'team_f': team_f,
-            'team_s': team_s,
-            'sport': self.sport_type,
-            'score_f': self.score_f,
-            'score_s': self.score_s,
+            'first': first,
+            'second': second,
+            'third': third,
+            'fourth': fourth
+        }
+        return json_dict
+
+
+class League(models.Model):
+    name = models.CharField(max_length=1000)
+    matches = models.ForeignKey(Match, on_delete=models.PROTECT)
+    teams = models.ForeignKey(TeamResult, on_delete=models.PROTECT, blank=True)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    finished = models.BooleanField(default=False)
+
+    def compare_date(self):
+        if self.finished:
+            return FINISHED
+        if datetime.now < self.date:
+            return UPCOMING
+        return IN_PROCESS
+
+    def json_dict(self):
+        matches = list()
+        for match in self.matches.all():
+            matches.append(
+                match.prev_json()
+            )
+
+        team_res = list()
+        for team in self.teams.all():
+            team_res.append(
+                team.prev_json()
+            )
+
+        tournament = list()
+        for tour in self.tournament.all():
+            tournament.append(
+                tour.json_dict()
+            )
+            break
+
+        json_dict = {
+            'name': self.name,
+            'matches': matches,
+            'teams': team_res,
+            'tournament': tournament,
             'date': self.date,
-            'events': events,
-            'time_report': time_report,
-            'images': images,
-            'videos': videos,
+            'status': self.compare_date(),
+            'league_id': self.id
         }
         return json_dict
 
-    def prev_json(self):
-
-        json_dict = {
-            'team_f': {
-                'name': self.team_f.name,
-                'id': self.team_f.id,
-            },
-            'team_s': {
-                'name': self.team_s.name,
-                'id': self.team_s.id
-            },
-            'score_f': self.score_f,
-            'score_s': self.score_s
-
+    def pre_json(self):
+        pre_json = {
+            'name': self.name,
+            'status': self.compare_date(),
+            'id': self.id,
+            'date': self.date,
         }
-        return json_dict
+        return pre_json
