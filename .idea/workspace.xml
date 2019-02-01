@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ba9f7515-1fb9-45a6-8d21-514cb9da5bf9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/EspnBackend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/EspnBackend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EspnBackend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/EspnBackend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/League/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Comment/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Comment/migrations/0002_auto_20190201_0825.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Comment/migrations/0003_comment_uploaded_at.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Espn/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Espn/migrations/0002_auto_20190127_1234.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Espn/migrations/0003_auto_20190127_1302.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/Espn/migrations/0004_auto_20190201_0539.py" beforeDir="false" />
+    <list default="true" id="ba9f7515-1fb9-45a6-8d21-514cb9da5bf9" name="Default Changelist" comment="crrct">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/Game/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/Game/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/League/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/League/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/League/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/League/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/League/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/League/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/League/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/League/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/News/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/News/migrations/0002_auto_20190201_0539.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,21 +17,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/Game/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25">
-              <caret line="89" column="28" selection-start-line="89" selection-start-column="28" selection-end-line="89" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="201">
+              <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/apps/League/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="22">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/Espn/admin.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="506">
+              <caret line="28" column="9" lean-forward="true" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -96,7 +92,7 @@
         <entry file="file://$PROJECT_DIR$/EspnBackend/settings.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="440">
-              <caret line="44" column="18" selection-start-line="44" selection-start-column="18" selection-end-line="44" selection-end-column="18" />
+              <caret line="45" column="16" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -109,6 +105,7 @@
       <find>admin.site.register(Player)</find>
       <find>team</find>
       <find>class team</find>
+      <find>teamRes</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -120,14 +117,14 @@
         <option value="$PROJECT_DIR$/apps/Game/admin.py" />
         <option value="$PROJECT_DIR$/EspnBackend/settings.py" />
         <option value="$PROJECT_DIR$/apps/League/admin.py" />
-        <option value="$PROJECT_DIR$/apps/Game/models.py" />
-        <option value="$PROJECT_DIR$/apps/League/models.py" />
         <option value="$PROJECT_DIR$/apps/Game/views.py" />
         <option value="$PROJECT_DIR$/EspnBackend/urls.py" />
+        <option value="$PROJECT_DIR$/apps/League/models.py" />
+        <option value="$PROJECT_DIR$/apps/Game/models.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="67" />
     <option name="y" value="27" />
     <option name="width" value="927" />
@@ -155,6 +152,12 @@
               <item name="ESPNBackEnd" type="462c0819:PsiDirectoryNode" />
               <item name="apps" type="462c0819:PsiDirectoryNode" />
               <item name="Game" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ESPNBackEnd" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ESPNBackEnd" type="462c0819:PsiDirectoryNode" />
+              <item name="apps" type="462c0819:PsiDirectoryNode" />
+              <item name="League" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ESPNBackEnd" type="b2602c69:ProjectViewProjectNode" />
@@ -223,7 +226,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1549031580775</updated>
-      <workItem from="1549031582386" duration="11168000" />
+      <workItem from="1549031582386" duration="11855000" />
     </task>
     <task id="LOCAL-00001" summary="correcting some models">
       <created>1549033902815</created>
@@ -250,7 +253,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11168000" />
+    <option name="totallyTimeSpent" value="11855000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -262,7 +265,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="67" y="27" width="1853" height="1053" extended-state="7" />
+    <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
@@ -272,11 +275,11 @@
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" weight="0.32937366" />
       <window_info anchor="bottom" id="Python Console" sideWeight="0.4997233" weight="0.32937366" />
-      <window_info anchor="bottom" id="Terminal" sideWeight="0.4997233" weight="0.32937366" />
+      <window_info active="true" anchor="bottom" id="Terminal" sideWeight="0.4997233" visible="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Event Log" sideWeight="0.5002767" side_tool="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32937366" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32937366" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -348,7 +351,7 @@
     <entry file="file://$PROJECT_DIR$/EspnBackend/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
-          <caret line="44" column="18" selection-start-line="44" selection-start-column="18" selection-end-line="44" selection-end-column="18" />
+          <caret line="45" column="16" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -359,16 +362,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/Comment/migrations/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/League/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="75" column="5" lean-forward="true" selection-start-line="75" selection-start-column="5" selection-end-line="75" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/Game/admin.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -383,16 +376,6 @@
           <caret line="36" column="33" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
           <folding>
             <element signature="e#653#685#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/Game/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="89" column="28" selection-start-line="89" selection-start-column="28" selection-end-line="89" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -417,7 +400,25 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/Espn/admin.py">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="28" column="9" lean-forward="true" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/League/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/Game/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+        </state>
+      </provider>
     </entry>
   </component>
 </project>

@@ -1,5 +1,5 @@
 from django.db import models
-from apps.League.models import TeamResult, RowTournament
+# from apps.League.models import TeamResult, RowTournament
 
 
 # class RangeField(models.IntegerField):
@@ -12,7 +12,7 @@ from apps.League.models import TeamResult, RowTournament
 #     return super(RangeField, self).formfield(**defaults)
 
 class Match(models.Model):
-    row_tour = models.ForeignKey(to=RowTournament, on_delete=models.CASCADE)
+    # row_tour = models.ForeignKey(to=RowTournament, on_delete=models.CASCADE)
     BASKETBALL = 'BASKET'
     FOOTBALL = 'FOOT'
     types = (
@@ -97,7 +97,7 @@ class Match(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=1000, unique=True)
     match = models.ForeignKey(to=Match, on_delete=models.CASCADE)
-    result = models.ForeignKey(to=TeamResult, on_delete=models.PROTECT)
+    # result = models.ForeignKey(to=TeamResult, on_delete=models.PROTECT)
 
     def json_dict(self):
         players = list()
