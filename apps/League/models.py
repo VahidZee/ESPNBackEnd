@@ -7,14 +7,68 @@ IN_PROCESS = 'in process'
 FINISHED = 'finished'
 
 
+class League(models.Model):
+    name = models.CharField(max_length=1000)
+    matches = models.ForeignKey(Match, on_delete=models.PROTECT)
+    date = models.DateTimeField()
+    finished = models.BooleanField(default=False)
+
+    def compare_date(self):
+        if self.finished:
+            return FINISHED
+        if datetime.now < self.date:
+            return UPCOMING
+        return IN_PROCESS
+
+    def json_dict(self):
+        matches = list()
+        for match in self.matches.all():
+            matches.append(
+                match.prev_json()
+            )
+
+        team_res = list()
+        for team in self.teams.all():
+            team_res.append(
+                team.prev_json()
+            )
+
+        tournament = list()
+        for tour in self.tournament.all():
+            tournament.append(
+                tour.json_dict()
+            )
+            break
+
+        json_dict = {
+            'name': self.name,
+            'matches': matches,
+            'teams': team_res,
+            'tournament': tournament,
+            'date': self.date,
+            'status': self.compare_date(),
+            'league_id': self.id
+        }
+        return json_dict
+
+    def pre_json(self):
+        pre_json = {
+            'name': self.name,
+            'status': self.compare_date(),
+            'id': self.id,
+            'date': self.date,
+        }
+        return pre_json
+
+
 class TeamResult(models.Model):
-    team = models.ForeignKey(to=Team, on_delete=models.PROTECT)
+    league = models.ForeignKey(to=League, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
     games = models.IntegerField(default=0)
 
     def json_dict(self):
         teams = list()
-        for team in self.team.all():
+        for team in self.team_set.all():
             teams.append(
                 team.prev_json()
             )
@@ -29,21 +83,22 @@ class TeamResult(models.Model):
 
 
 class RowTournament(models.Model):
-    matches = models.ForeignKey(to=Match, on_delete=models.PROTECT)
 
     def get_list(self, number):
         matches = list()
 
-        for index, match in enumerate(self.matches.all()):
+        for index, match in enumerate(self.match_set.all()):
             if index == number:
                 break
             matches.append(
-                match.json_dict()
+                match.prev_json()
             )
             break
+        return matches
 
 
 class Tournament(models.Model):
+    league = models.ForeignKey(to=League, on_delete=models.CASCADE)
     # first row contains 8 matches
     first_row = models.OneToOneField(RowTournament, blank=True)
     # second row contains 4 matches
@@ -94,59 +149,3 @@ class Tournament(models.Model):
             'fourth': fourth
         }
         return json_dict
-
-
-class League(models.Model):
-    name = models.CharField(max_length=1000)
-    matches = models.ForeignKey(Match, on_delete=models.PROTECT)
-    teams = models.ForeignKey(TeamResult, on_delete=models.PROTECT, blank=True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    date = models.DateTimeField()
-    finished = models.BooleanField(default=False)
-
-    def compare_date(self):
-        if self.finished:
-            return FINISHED
-        if datetime.now < self.date:
-            return UPCOMING
-        return IN_PROCESS
-
-    def json_dict(self):
-        matches = list()
-        for match in self.matches.all():
-            matches.append(
-                match.prev_json()
-            )
-
-        team_res = list()
-        for team in self.teams.all():
-            team_res.append(
-                team.prev_json()
-            )
-
-        tournament = list()
-        for tour in self.tournament.all():
-            tournament.append(
-                tour.json_dict()
-            )
-            break
-
-        json_dict = {
-            'name': self.name,
-            'matches': matches,
-            'teams': team_res,
-            'tournament': tournament,
-            'date': self.date,
-            'status': self.compare_date(),
-            'league_id': self.id
-        }
-        return json_dict
-
-    def pre_json(self):
-        pre_json = {
-            'name': self.name,
-            'status': self.compare_date(),
-            'id': self.id,
-            'date': self.date,
-        }
-        return pre_json

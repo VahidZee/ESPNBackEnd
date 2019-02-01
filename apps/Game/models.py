@@ -1,4 +1,5 @@
 from django.db import models
+from apps.League.models import TeamResult, RowTournament
 
 
 # class RangeField(models.IntegerField):
@@ -11,24 +12,20 @@ from django.db import models
 #     return super(RangeField, self).formfield(**defaults)
 
 class Match(models.Model):
+    row_tour = models.ForeignKey(to=RowTournament, on_delete=models.CASCADE)
     BASKETBALL = 'BASKET'
     FOOTBALL = 'FOOT'
     types = (
         (BASKETBALL, 'basketball'),
         (FOOTBALL, 'football'),
     )
-    team_f = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name='TeamOne')
-    team_s = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name='TeamTwo')
     score_f = models.IntegerField(default=0)
     score_s = models.IntegerField(default=0)
     date = models.DateField()
     sport_type = models.CharField(choices=types, max_length=10)
+
     # tables and timeline get created by this field
-    events = models.ForeignKey(to=Event, on_delete=models.CASCADE)
     # this field is for the time report
-    time_report = models.ForeignKey(to=Report, on_delete=models.CASCADE)
-    image_medias = models.ForeignKey(to=MediaImage, on_delete=models.CASCADE)
-    video_medias = models.ForeignKey(to=MediaVideo, on_delete=models.CASCADE)
 
     def get_winner(self):
         if self.score_s > self.score_f:
@@ -100,6 +97,7 @@ class Match(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=1000, unique=True)
     match = models.ForeignKey(to=Match, on_delete=models.CASCADE)
+    result = models.ForeignKey(to=TeamResult, on_delete=models.PROTECT)
 
     def json_dict(self):
         players = list()
