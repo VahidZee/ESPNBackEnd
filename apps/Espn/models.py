@@ -53,7 +53,7 @@ class Profile(models.Model):
             'last_name': self.user.last_name,
             'profile_picture': ''
         }
-        if not self.profile_picture:
+        if self.profile_picture:
             res['profile_picture'] = self.profile_picture.url
         return res
 

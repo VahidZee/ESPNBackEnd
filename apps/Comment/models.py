@@ -98,7 +98,8 @@ class Comment(models.Model):
                 is_liked = True,
             except Exception:
                 pass
-        replys = [comment.get_comment_json_dict() for comment in self.reply_to_set]
+        replys_objects = Comment.objects.filter(reply_to=self)
+        replys = [comment.comment_json_dict() for comment in replys_objects]
         return {
             'id': self.id,
             'userInfo': self.profile.info_json(),

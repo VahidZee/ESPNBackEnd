@@ -6,16 +6,21 @@ from . import models as comment_models
 from apps.Espn import models as espn_models
 
 # Local imports
-from apps.Espn.methods import find_profile_decorator
+from apps.Espn.methods import find_profile_decorator, find_profile_if_exists_decorator
 
 # Constant Values
 POSTS_PER_PAGE = 4
 
 
-def get_comment_field(request):
+@find_profile_if_exists_decorator
+def get_comment_field(request, id, profile=None, logged_in=False):
     commented_type = request.GET['type']
-    commented_id = request.GET['id']
-    page_number = request.GET['page_number']
+    commented_id = id
+    try:
+        page_number = request.GET['page_number']
+    except Exception:
+        page_number = 1
+
     response = {
         'ok': True,
         'has_more': False,
@@ -37,3 +42,9 @@ def get_comment_field(request):
         )
     else:
         comments = comment_field.comment_set.order_by('-uploaded_at')
+        comments = comments.filter(reply_to__isnull=True)
+        response_list = [comment.comment_json_dict(profile) for comment in comments]
+        response['list'] = response_list
+    return JsonResponse(
+        data=response
+    )

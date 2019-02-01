@@ -72,15 +72,15 @@ def find_profile_decorator(funct: callable):
 
 def find_profile_if_exists_decorator(funct: callable):
     @method_decorator(csrf_exempt, name='dispatch')
-    def wrapper(request):
+    def wrapper(request, *args, **kwargs):
         try:
             data = json.loads(request.body)
             profile = get_profile(data['token'])
             if not profile.active:
                 raise Exception
-            return funct(request, profile=profile, logged_in=True)
+            return funct(request, *args, profile=profile, logged_in=True, **kwargs)
         except Exception:
-            return funct(request, profile=None, logged_in=False)
+            return funct(request, *args, profile=None, logged_in=False, **kwargs)
 
     return wrapper
 
