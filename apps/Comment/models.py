@@ -1,11 +1,34 @@
 # General Imports
 from django.db import models
 
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
+
 # Model Imports
 from apps.Espn import models as espn_models
+from apps.News import models as news_models
 
 
 # Local Imports
+
+# Comment Fields for news
+@receiver(post_save, sender=news_models.News)
+def create_news_dependencies(sender, created, instance, **kwargs):
+    if created:
+        comment_field = CommentField()
+        comment_field.commented_id = instance.id
+        comment_field.field_type = 'N'
+        comment_field.save()
+
+
+@receiver(post_delete, sender=news_models.News)
+def remove_news_dependencies(sender, instance, **kwargs):
+    comment_field = CommentField.objects.get(
+        commented_id=instance.id,
+        field_type='N',
+    )
+    comment_field.delete()
+
 
 class CommentField(models.Model):
     GAME_TYPE = 'G'
@@ -31,6 +54,9 @@ class CommentField(models.Model):
         blank=False
     )
 
+    def __str__(self):
+        return self.get_field_type_display() + ' : ' + str(self.commented_id)
+
 
 class Comment(models.Model):
     field = models.ForeignKey(
@@ -43,14 +69,19 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
     )
     reply_to = models.ForeignKey(
-        to="Comment",
+        to="self",
         on_delete=models.CASCADE,
         blank=True,
+        null=True,
     )
 
     text = models.CharField(
         max_length=2200,
         blank=False
+    )
+
+    uploaded_at = models.DateTimeField(
+        auto_now=True,
     )
 
     def __str__(self):
