@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.Espn.apps.EspnConfig',
     'apps.News.apps.NewsConfig',
     'apps.Comment.apps.CommentConfig',
+    'apps.League',
     'apps.Game',
 
 ]

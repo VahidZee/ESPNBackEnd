@@ -1,8 +1,7 @@
 from django.urls import path
-from apps.Game import views
+from apps.League import views
 
 urlpatterns = [
-    path('player/<int:p_id>', views.send_player_data),
-    path('game/<int:g_id>', views.send_game_data),
-    path('team/<int:t_id>', views.send_team_data),
+    path('player/<int:l_id>', views.send_league_data),
+    path('', views.send_leagues),
 ]

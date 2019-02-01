@@ -1,11 +1,8 @@
 from django.contrib import admin
-from apps.Game.models import Player, Stat, Match, MediaVideo, MediaImage, Team, Report, Event
+#
+from apps.League.models import Tournament, TeamResult, RowTournament, League
 
-admin.site.register(Player)
-admin.site.register(Stat)
-admin.site.register(Match)
-admin.site.register(MediaVideo)
-admin.site.register(MediaImage)
-admin.site.register(Team)
-admin.site.register(Report)
-admin.site.register(Event)
+admin.site.register(League)
+admin.site.register(Tournament)
+admin.site.register(TeamResult)
+admin.site.register(RowTournament)

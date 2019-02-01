@@ -1,36 +1,13 @@
-from apps.Game.models import Player, Team, Match
+from apps.League import League
 from django.http import HttpResponse
 import json
 
 
-def send_player_data(_, p_id):
-    player = Player.objects.get(id=p_id)
-
-    json_dict = player.json_dict()
-
-    http_response = HttpResponse(
-        json.dumps(
-            json_dict,
-        ),
-        content_type='application/json',
-    )
-    http_response.status_code = 200
-    return http_response
-
-
-def send_team_data(_, t_id):
-    send_regular_data(Team, t_id)
-
-
-def send_game_data(_, g_id):
-    send_regular_data(Match, g_id)
-
-
-def send_regular_data(model_obj, id):
+def send_league_data(_, l_id):
     try:
-        model = model_obj.objects.get(id)
+        league = League.objects.get(l_id)
 
-        json_dict = model.json_dict()
+        json_dict = league.json_dict()
 
         http_response = HttpResponse(
             json.dumps(
@@ -53,3 +30,20 @@ def send_regular_data(model_obj, id):
 
         http_response.status_code = 400
         return http_response
+
+
+def send_leagues(request):
+    leagues = League.objects.all()
+    response = {}
+    for league in leagues:
+        response.append(
+            league.pre_json()
+        )
+    http_response = HttpResponse(
+        json.dumps(
+            response
+        )
+    )
+
+    http_response.status_code = 200
+    return http_response

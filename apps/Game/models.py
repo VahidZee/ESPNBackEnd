@@ -24,7 +24,7 @@ class Match(models.Model):
     date = models.DateField()
     sport_type = models.CharField(choices=types, max_length=10)
 
-    # tables and timeline get created by this field
+    # tables and timeline are created by this field
     # this field is for the time report
 
     def get_winner(self):
@@ -136,6 +136,8 @@ class Player(models.Model):
     ATTACK = 'ATTACK'
     DEFENCE = 'DEFENCE'
     GOAL_KEEPER = 'GOAL'
+    BEST_PLAYER = 'BEST'
+    BRANCH_PLAYER = 'BRANCH'
     # TODO learn the basketball and football posts and complete the posts choices
     posts = (
         (ATTACK, 'attack'),
@@ -205,7 +207,6 @@ class Stat(models.Model):
 
 
 class Report(models.Model):
-    match = models.ForeignKey(to=Match, on_delete=models.CASCADE)
     time = models.TimeField()
     explain = models.TextField()
     match = models.ForeignKey(to=Match, on_delete=models.CASCADE)

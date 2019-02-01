@@ -24,14 +24,14 @@ from apps.News import urls as news_urls
 from apps.Espn import urls as espn_urls
 from apps.Comment import urls as comment_urls
 
-# from Game import urls as g_url
-# from League import urls as l_url
+from apps.Game import urls as g_url
+# from apps.League import urls as l_url
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('news/', include(news_urls)),
                   path('users/', include(espn_urls)),
-                  path('comment/', include(comment_urls))
-                  # path('games/', include(g_url)),
+                  path('comment/', include(comment_urls)),
+                  path('games/', include(g_url)),
                   # path('league/', include(l_url))
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
