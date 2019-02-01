@@ -99,7 +99,7 @@ class Comment(models.Model):
             except Exception:
                 pass
         replys_objects = Comment.objects.filter(reply_to=self)
-        replys = [comment.comment_json_dict() for comment in replys_objects]
+        replys = [comment.comment_json_dict(profile) for comment in replys_objects]
         return {
             'id': self.id,
             'userInfo': self.profile.info_json(),

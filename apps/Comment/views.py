@@ -14,7 +14,6 @@ POSTS_PER_PAGE = 1
 
 @find_profile_if_exists_decorator
 def get_comment_field(request, commented_id, profile=None, logged_in=False):
-    print(profile)
     commented_type = request.GET['type']
     try:
         page_number = int(request.GET['page'])
