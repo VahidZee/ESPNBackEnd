@@ -13,9 +13,9 @@ POSTS_PER_PAGE = 1
 
 
 @find_profile_if_exists_decorator
-def get_comment_field(request, id, profile=None, logged_in=False):
+def get_comment_field(request, commented_id, profile=None, logged_in=False):
+    print(profile)
     commented_type = request.GET['type']
-    commented_id = id
     try:
         page_number = int(request.GET['page'])
     except Exception:
@@ -53,3 +53,38 @@ def get_comment_field(request, id, profile=None, logged_in=False):
     return JsonResponse(
         data=response
     )
+
+
+@find_profile_decorator
+def like_comment(request, comment_id: int, profile: espn_models.Profile):
+    try:
+        comment = comment_models.Comment.objects.get(id=comment_id)
+        try:
+            comment_models.CommentLike.objects.get(
+                profile=profile,
+                comment=comment
+            )
+            return JsonResponse(
+                data={
+                    'ok': False,
+                    'description': 'You Can\'t like an item twice'
+                }
+            )
+        except:
+            like = comment_models.CommentLike()
+            like.comment = comment
+            like.profile = profile
+            like.save()
+            return JsonResponse(
+                data={
+                    'ok': True,
+                    'description': 'Comment was liked successfully'
+                }
+            )
+    except:
+        return JsonResponse(
+            data={
+                'ok': False,
+                'description': 'Unable to like comment'
+            }
+        )

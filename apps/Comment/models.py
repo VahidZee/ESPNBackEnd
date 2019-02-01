@@ -89,7 +89,7 @@ class Comment(models.Model):
 
     def comment_json_dict(self, profile=None):
         is_liked = False,
-        if not profile:
+        if profile:
             try:
                 comment_like = CommentLike.objects.get(
                     comment=self,
@@ -120,7 +120,7 @@ class CommentLike(models.Model):
         on_delete=models.CASCADE,
         blank=True,
     )
-    profile = models.OneToOneField(
+    profile = models.ForeignKey(
         to=espn_models.Profile,
         on_delete=models.CASCADE,
     )

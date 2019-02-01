@@ -61,7 +61,6 @@ def find_profile_decorator(funct: callable):
         try:
             data = json.loads(request.body)
             profile = get_profile(data['token'])
-            print(profile)
             return funct(*args, request=request, profile=profile, **kwargs)
         except Exception:
             return user_profile_not_found()
