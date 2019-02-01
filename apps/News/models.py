@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.html import format_html
-from datetime import date,datetime
+from datetime import date, datetime
 
 
 # Create your models here.
@@ -149,7 +149,7 @@ class NewsResource(models.Model):
 
 
 class NewsTag(models.Model):
-    news = models.ForeignKey(to=News, on_delete=models.CASCADE)
+    news = models.ManyToManyField(to=News, blank=True)
 
     GAME_TAG = 'G'
     TEAM_TAG = 'T'
@@ -169,6 +169,9 @@ class NewsTag(models.Model):
 
     tagged_id = models.IntegerField(blank=False)
     tag_title = models.CharField(max_length=40, blank=False)
+
+    def __str__(self):
+        return self.tag_type + ' : ' + self.tag_title
 
     class Meta:
         verbose_name = 'Tag'

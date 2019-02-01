@@ -29,8 +29,24 @@ class NewsResourceInline(admin.TabularInline):
     ]
 
 
+@admin.register(news_models.NewsTag)
+class NewsTag(admin.ModelAdmin):
+    list_display = [
+        'tag_type', 'tag_title'
+    ]
+    list_display_links = [
+        'tag_title'
+    ]
+    search_fields = [
+        'tag_title'
+    ]
+    list_filter = [
+        'tag_type'
+    ]
+
+
 class NewsTagInline(admin.TabularInline):
-    model = news_models.NewsTag
+    model = news_models.NewsTag.news.through
     extra = 1
 
 

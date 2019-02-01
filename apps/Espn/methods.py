@@ -1,4 +1,5 @@
 # General Imports
+from django.core.mail import send_mail
 from django.http import JsonResponse
 
 from django.views.decorators.csrf import csrf_exempt
@@ -12,11 +13,10 @@ import json
 from apps.Espn import models as espn_models
 
 
-
 def create_new_access_token(profile: espn_models.Profile) -> str:
-    profile.token = python_secrets.token_urlsafe(nbytes=256)
+    profile.access_token = python_secrets.token_urlsafe(nbytes=256)
     profile.save()
-    return profile.token
+    return profile.access_token
 
 
 def user_password_was_incorrect() -> JsonResponse:
@@ -61,7 +61,59 @@ def find_profile_decorator(funct: callable):
         try:
             data = json.loads(request.body)
             profile = get_profile(data['token'])
+            if not profile.active:
+                raise Exception
             return funct(request, profile)
         except Exception:
             return user_profile_not_found()
+
     return wrapper
+
+
+def find_profile_if_exists_decorator(funct: callable):
+    @method_decorator(csrf_exempt, name='dispatch')
+    def wrapper(request):
+        try:
+            data = json.loads(request.body)
+            profile = get_profile(data['token'])
+            if not profile.active:
+                raise Exception
+            return funct(request, profile=profile, logged_in=True)
+        except Exception:
+            return funct(request, profile=None, logged_in=False)
+
+    return wrapper
+
+
+def create_forget_password_token(email: str):
+    try:
+        profile = espn_models.Profile.objects.get(user__email=email)
+        profile.forget_password_access_token = python_secrets.token_urlsafe(nbytes=256)
+        profile.save()
+    except Exception:
+        return False, None
+    return profile.forget_password_access_token, profile
+
+
+def send_forget_password_email(profile: espn_models.Profile, token: str):
+    subject = 'Your Forget Password Token'
+    body = token
+    send_mail(
+        subject,
+        body,
+        'noreply@aeonem.xyz',
+        [profile.user.email],
+        fail_silently=False,
+    )
+
+
+def send_new_account_activation_email(profile: espn_models.Profile):
+    subject = 'Account Activation Token'
+    body = create_new_access_token(profile)
+    send_mail(
+        subject,
+        body,
+        'noreply@aeonem.xyz',
+        [profile.user.email],
+        fail_silently=False,
+    )

@@ -38,13 +38,10 @@ INSTALLED_APPS = [
 
     # 3rd Party
 
-
     # Locals
-    'apps.News.apps.NewsConfig',
     'apps.Espn.apps.EspnConfig',
-
-    'Game.apps.GameConfig',
-    'League.apps.LeagueConfig'
+    'apps.News.apps.NewsConfig',
+    'apps.Comment.apps.CommentConfig'
 ]
 
 MIDDLEWARE = [
@@ -125,3 +122,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
+
+# Emailing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
