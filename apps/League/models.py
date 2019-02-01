@@ -1,5 +1,5 @@
 from django.db import models
-from ESPNBackEnd.apps.Game.models import Match, Team
+from apps.Game.models import Match, Team
 import datetime
 
 UPCOMING = 'upcoming'
