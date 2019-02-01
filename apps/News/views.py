@@ -54,6 +54,8 @@ def get_news_list(request, profile, logged_in: bool = False):
     news = news_models.News.objects.all()
     response_json_array = []
     response = {
+        'ok': True,
+        'description': '',
         'has_more': False,
         'list': [],
     }
@@ -61,7 +63,7 @@ def get_news_list(request, profile, logged_in: bool = False):
 
     # Filtering Recent Option
     if get_type == 'recent':
-        news = news.filter(uploaded_at__gte=datetime.now() - timedelta(days=10))
+        news = news.filter(uploaded_at__gte=datetime.now() - timedelta(days=2))
         for index in range((page_number - 1) * PAGE_POSTS_COUNT, page_number * PAGE_POSTS_COUNT):
             if index < news.count():
                 response_json_array.append(
@@ -76,6 +78,15 @@ def get_news_list(request, profile, logged_in: bool = False):
         # response pagination
         if page_number * PAGE_POSTS_COUNT < news.count():
             response['has_more'] = True
+
+    # Filtering Subscribed Option
+    if get_type == 'subscribed':
+        if not logged_in:
+            response['ok'] = False
+            response['description'] = 'You need to be logged in to see your subscribed news'
+            return JsonResponse(
+                data=response
+            )
 
     # Filtering and Finding related News
     if get_type == 'related':
@@ -98,7 +109,7 @@ def get_news_list(request, profile, logged_in: bool = False):
             response['list'] = response_json_array
 
             # Response Pagination
-            if len(temp_array) > page_number * PAGE_POSTS_COUNT :
+            if len(temp_array) > page_number * PAGE_POSTS_COUNT:
                 response['has_more'] = True
 
     return JsonResponse(
