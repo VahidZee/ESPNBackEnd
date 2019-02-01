@@ -36,4 +36,4 @@ def get_comment_field(request):
             }
         )
     else:
-        comment_field.comment_set.order_by()
+        comments = comment_field.comment_set.order_by('-uploaded_at')

@@ -84,6 +84,23 @@ class Comment(models.Model):
         auto_now=True,
     )
 
+    def get_comment_json_dict(self, profile=None):
+        is_liked = False,
+        if not profile:
+            try:
+                comment_like = CommentLike.objects.get(
+                    comment=self,
+                    profile=profile,
+                )
+                is_liked = True,
+            except Exception:
+                pass
+        replys = [comment.get_comment_json_dict() for comment in self.reply_to_set]
+        return {
+            'id': self.id,
+            'userInfo': self.profile.info()
+        }
+
     def __str__(self):
         return self.profile.user.username + ' : ' + self.text
 

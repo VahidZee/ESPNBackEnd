@@ -46,5 +46,16 @@ class Profile(models.Model):
         res = '<img src="{}" width="50vw">'.format('http://127.0.0.1:8000/' + str(self.profile_picture.url))
         return format_html(res)
 
+    def info_json(self):
+        res = {
+            'username': self.user.username,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+            'profile_picture': ''
+        }
+        if not self.profile_picture:
+            res['profile_picture'] = self.profile_picture.url
+        return res
+
     def __str__(self):
         return self.user.username
