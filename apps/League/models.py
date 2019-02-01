@@ -28,7 +28,7 @@ class Stat(models.Model):
             'season': self.season,
             'GP': self.GP,
             'MPG': self.MPG,
-            'FG%': self.FG,
+            'FG': self.FG,
             'APG': self.APG,
             'RPG': self.RPG,
             'BLKPG': self.BLKPG,
@@ -60,8 +60,11 @@ class Player(models.Model):
         (GOAL_KEEPER, 'goal keeper'),
 
     )
+    team_name = models.CharField(max_length=1000)
     sport_type = models.CharField(choices=types, max_length=10)
     post = models.CharField(choices=posts, max_length=100)
+    born = models.DateField()
+    experience = models.IntegerField()
 
     def json_dict(self):
         stat_list = list()
@@ -75,9 +78,18 @@ class Player(models.Model):
             'id': self.id,
             'stats': stat_list,
             'name': self.name,
-            'team_id': self.team_id
+            'team_id': self.team_id,
+            'team_name': self.team_name,
+            'born': self.born.isoformat(),
+            'exp': self.experience,
         }
         return json_dict
+
+    def prev_json(self):
+        json_dict = {
+            'id': self.id,
+            'name': self.name,
+        }
 
 
 class Team(models.Model):
@@ -96,6 +108,18 @@ class Team(models.Model):
         }
         return json_dict
 
+    def prev_json(self):
+        players = list()
+        for player in self.players:
+            players.append(
+                player.prev_json()
+            )
+        json_dict = {
+            'name': self.name,
+            'players': self.players
+        }
+        return json_dict
+
 
 class Report(models.Model):
     time = models.TimeField()
@@ -111,9 +135,11 @@ class Report(models.Model):
 
 class Event(models.Model):
     CORNER = 'CORNER'
+    HAND = 'HAND'
     # TODO: fill the event_choices with related data
     types = (
         (CORNER, 'corner'),
+        (HAND, 'hand'),
     )
     event_type = models.CharField(choices=types, max_length=100)
     related_player = models.ForeignKey(to=Player, on_delete=models.PROTECT, blank=True)
@@ -144,10 +170,13 @@ class MediaImage(models.Model):
 
 class MediaVideo(models.Model):
     # video field shit...
-    pass
+    url = models.URLField()
 
     def json_dict(self):
-        pass
+        return {
+            'url': self.url
+        }
+
 
 class Match(models.Model):
     BASKETBALL = 'BASKET'
@@ -227,3 +256,21 @@ class Match(models.Model):
             'images': images,
             'videos': videos,
         }
+        return json_dict
+
+    def prev_json(self):
+
+        json_dict = {
+            'team_f': {
+                'name': self.team_f.name,
+                'id': self.team_f.id,
+            },
+            'team_s': {
+                'name': self.team_s.name,
+                'id': self.team_s.id
+            },
+            'score_f': self.score_f,
+            'score_s': self.score_s
+
+        }
+        return json_dict
