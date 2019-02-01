@@ -31,6 +31,9 @@ class CommentField(models.Model):
         blank=False
     )
 
+    def __str__(self):
+        return self.get_field_type_display() + ' : ' + str(self.commented_id)
+
 
 class Comment(models.Model):
     field = models.ForeignKey(
@@ -43,9 +46,10 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
     )
     reply_to = models.ForeignKey(
-        to="Comment",
+        to="self",
         on_delete=models.CASCADE,
         blank=True,
+        null=True,
     )
 
     text = models.CharField(
