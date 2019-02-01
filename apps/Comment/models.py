@@ -80,6 +80,10 @@ class Comment(models.Model):
         blank=False
     )
 
+    uploaded_at = models.DateTimeField(
+        auto_now=True,
+    )
+
     def __str__(self):
         return self.profile.user.username + ' : ' + self.text
 
