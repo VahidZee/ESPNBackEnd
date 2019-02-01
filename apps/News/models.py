@@ -1,10 +1,11 @@
+# General Imports
 from django.db import models
+
 from django.utils.html import format_html
 from datetime import date, datetime
 
 
-# Create your models here.
-
+# Image paths
 def image_path(instance, filename: str):
     return 'news/' + str(date.today()) + '/' + str(datetime.now().time()) + '-img-' + filename.strip().replace(' ', '')
 
