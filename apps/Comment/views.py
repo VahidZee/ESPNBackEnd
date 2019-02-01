@@ -17,7 +17,7 @@ def get_comment_field(request, id, profile=None, logged_in=False):
     commented_type = request.GET['type']
     commented_id = id
     try:
-        page_number = int(request.GET['page_number'])
+        page_number = int(request.GET['page'])
     except Exception:
         page_number = 1
 

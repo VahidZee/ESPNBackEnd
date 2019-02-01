@@ -107,7 +107,7 @@ class Comment(models.Model):
             'text': self.text,
             'likesCount': self.likes_count(),
             'liked': bool(is_liked[0]),
-            'replys': replys
+            'replies': replys
         }
 
     def __str__(self):
