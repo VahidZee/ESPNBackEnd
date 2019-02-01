@@ -9,7 +9,7 @@ from apps.Espn import models as espn_models
 from apps.Espn.methods import find_profile_decorator, find_profile_if_exists_decorator
 
 # Constant Values
-POSTS_PER_PAGE = 4
+POSTS_PER_PAGE = 1
 
 
 @find_profile_if_exists_decorator
@@ -17,7 +17,7 @@ def get_comment_field(request, id, profile=None, logged_in=False):
     commented_type = request.GET['type']
     commented_id = id
     try:
-        page_number = request.GET['page_number']
+        page_number = int(request.GET['page_number'])
     except Exception:
         page_number = 1
 
@@ -44,7 +44,12 @@ def get_comment_field(request, id, profile=None, logged_in=False):
         comments = comment_field.comment_set.order_by('-uploaded_at')
         comments = comments.filter(reply_to__isnull=True)
         response_list = [comment.comment_json_dict(profile) for comment in comments]
-        response['list'] = response_list
+
+        # Paginating Response
+        response['list'] = response_list[(page_number - 1) * POSTS_PER_PAGE: page_number * POSTS_PER_PAGE]
+        if len(response_list) > page_number * POSTS_PER_PAGE:
+            response['has_more'] = True
+
     return JsonResponse(
         data=response
     )
